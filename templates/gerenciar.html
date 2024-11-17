@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainvest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/style.css">
+    <nav style="border-style: groove;" class="navbar navbar-expand-lg bg-body-tertiary">
+      <div  class="container-fluid">
+        <a class="navbar-brand">Back Office</a>
+        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{url_for('home')}}">Tarefas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{url_for('middle')}}">Middle</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{url_for('projetos')}}">Projetos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{url_for('fechamento')}}">Fechamento</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{url_for('outros')}}">Outros</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{url_for('gerenciar')}}">Gerenciar</a>
+            </li>
+            <div style="margin-left: 700px;">
+              <a>{{current_user.username}}</a><br>
+              <a href="{{url_for('logout')}}">Sair</a>
+            </div>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </head>
+<body>
+    
+<!-- Modal para criar nova tarefa-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="/create-user">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Novo usuário</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input style="padding-top: 5px;" type="text" name="nome" placeholder="Nome" class="mb-2" required><br>
+          <input style="padding-top: 5px;" type="text" name="email" placeholder="E-mail" class="mb-2" required><br>
+          <input style="padding-top: 5px;" type="password" name="senha" placeholder="Senha de acesso" class="mb-2" required><br>
+          <div>
+            <select name="area" required>
+              <Option>Back Office</Option>
+              <Option>Middle OFfice</Option>
+              <Option>Gestão</Option>
+              <Option>Comercial</Option>
+              <Option>Finance</Option>
+              <Option>TI</Option>
+            </select>
+          </div>
+      </div>
+        <div class="modal-footer" type="text">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Criar cadastro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="tarefas-style">
+<!-- Listar tarefas-->
+<div>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Novo cadastro</button>
+</div>
+    </div>
+      
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</body>
+</html>
