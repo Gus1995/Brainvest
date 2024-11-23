@@ -8,7 +8,6 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 import random
 
-
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
@@ -31,20 +30,23 @@ def create_app():
     class User(db.Model, UserMixin):
         __tablename__ = 'User'
         id = db.Column(db.Integer, primary_key=True)
-        nome = db.Column(db.String(20), nullable=False, unique=True)
+        username = db.Column(db.String(20), nullable=False, unique=True)
         email = db.Column(db.String(80), nullable=False)
-        senha = db.Column(db.String(80), nullable=False)
+        password = db.Column(db.String(80), nullable=False)
         status = db.Column(db.String(80), nullable=False)
         area = db.Column(db.String(80), nullable=False)
 
     @login_manager.user_loader
     def load_user(user_id):
-        return User.query.get(int(user_id))
-    
+        try:
+            return User.query.get(int(user_id))
+        except ValueError:
+            return None
+        
     class RegisterForm(FlaskForm):
         
         username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-        password = PasswordField(validators=[InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+        senha = PasswordField(validators=[InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
         submit = SubmitField('Register')
 
         def validate_username(self, username):
@@ -62,7 +64,7 @@ def create_app():
         id = db.Column(db.Integer, primary_key=True)
         nome = db.Column(db.String(100), nullable=False)
         email = db.Column(db.String(100), nullable=False)
-        senha = db.Column(db.String(100), nullable=False)
+        password = db.Column(db.String(100), nullable=False)
 
         @classmethod
         def retrieve_all(cls):
@@ -88,8 +90,6 @@ def create_app():
                 return redirect(url_for('home', username=form.username.data))
         return render_template('login.html', form=form)
     
-    
-
     @app.route('/home')
     @login_required
     def home():
@@ -103,8 +103,9 @@ def create_app():
     
     @app.route('/gerenciar')
     def gerenciar():
-        return render_template('gerenciar.html')
-
+        users = User.query.all()
+        return render_template('gerenciar.html', users=users)
+    
     @app.route('/outros')
     def outros():
         return render_template('outros.html')
@@ -126,9 +127,6 @@ def create_app():
     #--- Features
 
     # Criar e gerenciar tasks
-
-
-
 
     @app.route('/create-task', methods=['POST'])
     def create_task():
@@ -154,7 +152,15 @@ def create_app():
         if task:
             db.session.delete(task)
             db.session.commit()
-        return redirect(url_for('home'))  
+        return redirect(url_for('home'))
+
+    @app.route('/delete-user/<int:user_id>', methods=['POST'])
+    def delete_user(user_id):
+        user = User.query.get(user_id)
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+        return redirect(url_for('gerenciar'))  
     
     @app.route('/check-task/<int:task_id>', methods=['POST'])
     def check_task(task_id):
@@ -166,29 +172,28 @@ def create_app():
             task.status = 'Concluído'
             db.session.commit()
         return redirect(url_for('home'))  
-    
+
     @app.route('/create-user', methods=['POST'])
     def create_user():
-        nome = request.form['nome']
+        username = request.form['nome']
         email = request.form['email']
-        senha = request.form['senha']
-        area= request.form['area']
-        id = 'USER' + str(random.randint(1000, 9999))
+        password = request.form['senha']
+        area = request.form['area']
+        id = random.randint(1000, 9999)
         status = 'ativo'
 
-        new_user = User(nome=nome, email=email, senha=senha, id=id, status=status, area=area)
+        # Hash the password before saving
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+        new_user = User(username=username, email=email, password=hashed_password, id=id, status=status, area=area)
 
         db.session.add(new_user)
         db.session.commit()
-        db.session.remove()
 
         return redirect(url_for('gerenciar'))
     
     return app
     
-
-
-
 if __name__ == '__main__':
     app = create_app()
     app.run(debug=True)
