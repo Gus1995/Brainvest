@@ -55,13 +55,11 @@
         <div class="modal-body">
           <input style="padding-top: 5px;" type="text" name="tarefa" placeholder="Tarefa" class="mb-2" required>
           <select name="responsavel" required>
-            <Option>Pedro</Option>
-            <Option>Michael</Option>
-            <Option>Murillo</Option>
-            <Option>Gustavo</Option>
-            <Option>Matheus</Option>
-            <Option>Cesar</Option>
+            {% for user in users %}
+            <Option>{{ user.username }}</Option>
+            {% endfor %}
           </select>
+          
           <input style="padding-top: 5px;" type="text" name="frequencia" placeholder="Frequência" class="mb-2"><br>
       </div>
       <div class="mb-3">

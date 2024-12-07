@@ -94,8 +94,9 @@ def create_app():
     @login_required
     def home():
         tasks = Task.query.all()  # Query all tasks
+        users = User.query.all()
         print (tasks)
-        return render_template('home.html', tasks=tasks)
+        return render_template('home.html', tasks=tasks, users=users)
     
     @app.route('/middle')
     def middle():
@@ -160,6 +161,12 @@ def create_app():
         if user:
             db.session.delete(user)
             db.session.commit()
+        return redirect(url_for('gerenciar'))
+
+    @app.route('/edit_user/<int:user_id>', methods=['POST'])
+    def edit_user(user_id):
+        user = User.query.get(user_id)
+        
         return redirect(url_for('gerenciar'))  
     
     @app.route('/check-task/<int:task_id>', methods=['POST'])

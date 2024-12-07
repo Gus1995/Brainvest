@@ -99,7 +99,10 @@
             <td>{{ user.area }}</td>
             <td>
               <form action="/delete-user/{{ user.id }}" method="POST" style="display:inline;">
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="submit" class="btn btn-danger">Deletar</button>
+              </form>
+              <form action="/edit_user/{{ user.id }}" method="POST" style="display:inline;">
+                <button style="background-color: blue; border-color: blue;" type="submit" class="btn btn-danger">Editar</button>
               </form>
             </td>
        
